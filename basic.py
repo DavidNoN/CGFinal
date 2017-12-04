@@ -1,6 +1,6 @@
 import pygame
 import ConfigParser
-
+#tragame tierra, y arrojame en una isla
 #Contantes globales
 
 # Colores
