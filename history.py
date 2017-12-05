@@ -11,6 +11,7 @@ def Intro():
     while not salir:
         for e in pygame.event.get():
             if e.type == QUIT:
+                import sys
                 sys.exit(0)
             if e.type == pygame.KEYDOWN:
                 if e.key == pygame.K_RETURN:

@@ -19,6 +19,40 @@ ALTO  = 600
 
 #mapa
 archivo = "mapa.map"
+class enemigo(pygame.sprite.Sprite):
+    def __init__(self, img_sprite):
+        pygame.sprite.Sprite.__init__(self)
+        self.m=img_sprite
+        self.image=self.m[0][2]
+        self.rect=self.image.get_rect()
+        self.dir=2
+        self.i=0
+        self.var_x=3
+        self.var_y=0
+        self.flag=0
+        #2 derecha, 1 izquierda
+
+    def update(self):
+        if self.var_x !=0 or self.var_y !=0:
+            if self.i <2:
+                self.i+=1
+            else:
+                self.i=0
+        self.image=self.m[self.i][self.dir]
+        #self.rect=self.image.get_rect()
+
+    
+        if self.flag==1:
+            self.rect.x = random.randrange(ANCHO,ANCHO+50)
+            self.rect.y = random.randrange(20,ALTO-120)
+        self.dir=1
+        self.rect.x-=self.var_x
+        self.flag=0
+        if self.rect.x < -50:
+            self.rect.x = random.randrange(-50,-40)
+            self.rect.y = random.randrange(20,ALTO-120)
+            self.flag=1
+
 
 #Jugador
 class Jugador(pygame.sprite.Sprite):
@@ -101,6 +135,25 @@ def Recorte(): # funcion que me retorna una matriz con todos los recortes hechos
             matriz[i].append(recorte)
     return matriz
 
+def Recortar(archivo, an,al):
+    fondo = pygame.image.load(archivo).convert_alpha()
+
+    info=fondo.get_size()
+    img_ancho=info[0]
+    img_alto=info[1]
+    corte_x=img_ancho/an
+    corte_y=img_alto/al
+
+    m=[]
+    for i in range(an):
+        fila=[]
+        for j in range(al):
+            cuadro=[i*corte_x,j*corte_y,corte_x,corte_y]
+            recorte = fondo.subsurface(cuadro)
+            fila.append(recorte)
+        m.append(fila)
+
+    return m
 
 #-------------------- Menu-----------------------------------------------
 
@@ -245,7 +298,8 @@ def comenzar_nuevo_juego():
     mapa = mapa.split('\n')
     nf = 0
     fila_ejemplo = mapa[1]
-
+    
+    
     x,y=[0,0]
     fin=False
     
@@ -290,6 +344,7 @@ def comenzar_nuevo_juego():
         
         general.update()
         general.draw(pantalla)
+        
         pygame.display.flip()
         reloj.tick(60)
         
@@ -383,5 +438,6 @@ if __name__ == '__main__':
         menu.imprimir(pantalla)
         pygame.display.flip()
         pygame.time.delay(10)
+
 
     
