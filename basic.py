@@ -3,6 +3,7 @@ import ConfigParser
 import random
 import pygame
 from pygame.locals import *
+from history import *
 #Contantes globales
 
 # Colores
@@ -163,8 +164,8 @@ class Menu:
     def __init__(self, opciones):
         self.opciones = []
         fuente = pygame.font.Font('dejavu.ttf', 20)
-        x = 105
-        y = 105
+        x = 119
+        y = 119
         paridad = 1
 
         self.cursor = Cursor(x - 30, y, 30)
@@ -218,13 +219,20 @@ class Menu:
 
         for opcion in self.opciones:
             opcion.imprimir(screen)
+    
+    fondom = pygame.image.load("lucifer.png")
+    fondo1 = pygame.transform.scale(fondom, (800, 600))  
 
+def fondo(archivo):
+    pantalla.blit(archivo, (0,0))
 
+        
        
 
 def comenzar_nuevo_juego():
-
-    print " Funcion que muestra un nuevo juego."
+    Intro() # llamo al metodo intro para que se pueda visualizar la historia
+    #antes de entrar a jugar
+    
     fondo = matimg('terrenogen.png',32,12)
     #Grupos
     general=pygame.sprite.Group()
@@ -240,13 +248,16 @@ def comenzar_nuevo_juego():
 
     x,y=[0,0]
     fin=False
+    
     while not fin:
         posMouse=pygame.mouse.get_pos()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                import sys
                 fin = True
-                salir=True
-               
+                sys.exit()    
+            
+                
             if event.type==pygame.MOUSEBUTTONDOWN:
                 jp.p1,jp.p2=posMouse
                 jp.x=0
@@ -255,9 +266,8 @@ def comenzar_nuevo_juego():
                 elif jp.rect.x>jp.p1:
                     jp.var_x=-5
                 jp.Pendiente()
-       
-
-    
+        
+        
 
         y = 0
         l = 0
@@ -275,6 +285,9 @@ def comenzar_nuevo_juego():
                 l += 32
             y += 32
             l= 0
+        
+       
+        
         general.update()
         general.draw(pantalla)
         pygame.display.flip()
@@ -284,10 +297,45 @@ def comenzar_nuevo_juego():
     
 
 def mostrar_opciones():
-    print " Funcion que muestra otro menu de opciones."
-
+    
+    salir=False
+    screen = pygame.display.set_mode((800,600))
+    fondo = pygame.image.load("instruccion.png")
+    fondo1 = pygame.transform.scale(fondo, (800, 600))
+    while not salir:
+        for e in pygame.event.get():
+            import sys
+            if e.type == QUIT:
+                sys.exit(0)
+            if e.type == pygame.KEYDOWN:
+                if e.key == pygame.K_RETURN:
+                    salir = True
+            
+        screen.blit(fondo1,(0,0))
+        pygame.display.flip()
+        pygame.time.delay(10)
+   
+    
+    reloj.tick(60)
+    
 def creditos():
-    print " Funcion que muestra los creditos del programa."
+    salir=False
+    screen = pygame.display.set_mode((800,600))
+    fondo = pygame.image.load("creditos.png")
+    fondo1 = pygame.transform.scale(fondo, (800, 600))
+    while not salir:
+        for e in pygame.event.get():
+            import sys
+            if e.type == QUIT:
+                sys.exit(0)
+            if e.type == pygame.KEYDOWN:
+                if e.key == pygame.K_RETURN:
+                    salir = True
+            
+        screen.blit(fondo1,(0,0))
+        pygame.display.flip()
+        pygame.time.delay(10)
+   
 
 def salir_del_programa():
     import sys
@@ -299,7 +347,7 @@ def salir_del_programa():
 
         
 
-#----------------------------------------------------------------------------------
+#--------------------principal-------------------------------------
 
 if __name__ == '__main__':
     pygame.init()
@@ -307,29 +355,33 @@ if __name__ == '__main__':
     pygame.display.set_caption("Escaping Hell")
     
     fin=False
+    fin1=False
     opciones = [
         ("Jugar", comenzar_nuevo_juego),
-        ("Opciones", mostrar_opciones),
+        ("Instrucciones", mostrar_opciones),
         ("Creditos", creditos),
         ("Salir", salir_del_programa)
         ]
 
-    #pygame.font.init()
-    fondom = pygame.image.load("title_box.png")
-    fondo1 = pygame.transform.scale(fondom, (800, 600))
-
+    
     menu = Menu(opciones)
-
     reloj=pygame.time.Clock()
 
 
     while not fin:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                #salir = True
+               
                 fin= True
+        
+        fondom = pygame.image.load("title_box.png")
+        fondo1 = pygame.transform.scale(fondom, (800, 600))        
         pantalla.blit(fondo1, (0, 0))
+
+        
         menu.actualizar()
         menu.imprimir(pantalla)
         pygame.display.flip()
         pygame.time.delay(10)
+
+    
